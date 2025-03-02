@@ -115,9 +115,8 @@ export default function Notes() {
                 </div>
               </div>
               
-              {/* Content section with price */}
+              {/* Content section with price - no topic information */}
               <div className="p-4">
-                <p className="text-muted-foreground mb-4">{note.description}</p>
                 <div className="flex items-center justify-end transition-opacity duration-300 group-hover:opacity-0">
                   <p className="text-2xl font-bold text-primary">₹{note.price}</p>
                 </div>
