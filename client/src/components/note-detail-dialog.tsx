@@ -68,17 +68,7 @@ export default function NoteDetailDialog({ note, onPurchase }: NoteDetailDialogP
               </ul>
             </div>
 
-            <div className="mb-6">
-              <h3 className="text-lg font-semibold mb-2">Topics Covered</h3>
-              <ul className="space-y-1">
-                {note.topics.map((topic, i) => (
-                  <li key={i} className="flex items-center">
-                    <ChevronRight className="h-4 w-4 mr-1 text-primary" />
-                    {topic}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            
 
             <div className="flex items-center justify-between mb-4">
               <span className="text-sm text-muted-foreground">{note.pages} pages</span>
@@ -129,7 +119,7 @@ export default function NoteDetailDialog({ note, onPurchase }: NoteDetailDialogP
               className="w-full"
             >
               <Download className="h-4 w-4 mr-2" />
-              Purchase Notes for ₹{note.price}
+              Purchase Notes
             </Button>
           </div>
         </div>

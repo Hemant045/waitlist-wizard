@@ -97,53 +97,39 @@ export default function Notes() {
       <div className="grid md:grid-cols-3 gap-8">
         {notes.map((note, index) => (
           <Card key={index} className="group relative overflow-hidden hover:shadow-xl transition-all duration-300">
-            <CardContent className="pt-6">
-              {/* Circle background for icon */}
-              <div className="w-24 h-24 bg-primary/10 rounded-full mx-auto mb-6 flex items-center justify-center">
-                <FileText className="h-12 w-12 text-primary" />
-              </div>
-
-              <h3 className="text-xl font-semibold mb-2">{note.title}</h3>
-              <p className="text-muted-foreground mb-4">{note.description}</p>
-
-              {/* Topics list */}
-              <div className="mb-4">
-                <h4 className="font-medium mb-2">Topics Covered:</h4>
-                <ul className="text-sm text-muted-foreground space-y-1">
-                  {note.topics.map((topic, i) => (
-                    <li key={i} className="flex items-center">
-                      <ChevronRight className="h-4 w-4 mr-1" />
-                      {topic}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm text-muted-foreground">{note.pages} pages</span>
-                <p className="text-2xl font-bold">₹{note.price}</p>
-              </div>
-
-              {/* PDF Preview with hover effect */}
-              <div className="relative overflow-hidden rounded-lg border">
+            <CardContent className="p-0">
+              {/* Subject image as card background */}
+              <div className="relative overflow-hidden rounded-t-lg">
                 <div className="aspect-[3/4] overflow-hidden">
                   <img 
-                    src={note.previewPages[0]} 
+                    src={note.imageUrl || note.previewPages[0]} 
                     alt={note.title} 
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
+                  
+                  {/* Transparent overlay with title at bottom */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                    <h3 className="text-xl font-semibold mb-1 text-white">{note.title}</h3>
+                    <span className="text-sm text-white/70">{note.pages} pages</span>
+                  </div>
                 </div>
+              </div>
+              
+              {/* Content section */}
+              <div className="p-4">
+                <p className="text-muted-foreground mb-4">{note.description}</p>
+              </div>
 
-                {/* Hover overlay */}
-                <div className="absolute inset-0 bg-background/80 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <NoteDetailDialog 
-                    note={note}
-                    onPurchase={() => {
-                      // Handle purchase flow
-                      console.log("Purchase clicked for", note.title);
-                    }}
-                  />
-                </div>
+              {/* Hover overlay for "Explore More" */}
+              <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+
+                <NoteDetailDialog 
+                  note={note}
+                  onPurchase={() => {
+                    // Handle purchase flow
+                    console.log("Purchase clicked for", note.title);
+                  }}
+                />
               </div>
             </CardContent>
           </Card>
