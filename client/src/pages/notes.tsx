@@ -106,7 +106,18 @@ export default function Notes() {
               <h3 className="text-xl font-semibold mb-2">{note.title}</h3>
               <p className="text-muted-foreground mb-4">{note.description}</p>
 
-              
+              {/* Topics list */}
+              <div className="mb-4">
+                <h4 className="font-medium mb-2">Topics Covered:</h4>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  {note.topics.map((topic, i) => (
+                    <li key={i} className="flex items-center">
+                      <ChevronRight className="h-4 w-4 mr-1" />
+                      {topic}
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
               <div className="flex items-center justify-between mb-4">
                 <span className="text-sm text-muted-foreground">{note.pages} pages</span>
