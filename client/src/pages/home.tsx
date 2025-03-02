@@ -1,5 +1,5 @@
 import HeroSection from "@/components/hero-section";
-import FeaturesSection from "@/components/features-section";
+import CourseList from "@/components/course-list";
 import WaitlistForm from "@/components/waitlist-form";
 
 export default function Home() {
@@ -7,7 +7,7 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       <main className="container mx-auto px-4 py-8">
         <HeroSection />
-        <FeaturesSection />
+        <CourseList />
         <WaitlistForm />
       </main>
     </div>
