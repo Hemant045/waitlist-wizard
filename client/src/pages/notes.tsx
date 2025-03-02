@@ -122,12 +122,7 @@ export default function Notes() {
               <div className="flex items-center justify-between mb-4">
                 <span className="text-sm text-muted-foreground">{note.pages} pages</span>
                 <p className="text-2xl font-bold">₹{note.price}</p>
-              </div>
-
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm text-muted-foreground">{note.pages} pages</span>
-                <p className="text-2xl font-bold">₹{note.price}</p>
-              </div>
+              </div>div>
 
               {/* PDF Preview with hover effect */}
               <div className="relative overflow-hidden rounded-lg border">
