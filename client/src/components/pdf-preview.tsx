@@ -1,19 +1,28 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Lock, Download, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useEmblaCarousel from 'embla-carousel-react';
 
-interface PDFPreviewProps {
-  previewPages: string[];
-  title: string;
-  price: number;
-  onPurchase: () => void;
-}
+type PDFPreviewProps = {
+  pages: string[];
+  title?: string;
+  price?: number;
+  onPurchase?: () => void;
+};
 
-export default function PDFPreview({ previewPages, title, price, onPurchase }: PDFPreviewProps) {
+export default function PDFPreview({ pages, title, price, onPurchase }: PDFPreviewProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [canScrollPrev, setCanScrollPrev] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(true);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setCurrentSlide(emblaApi.selectedScrollSnap());
+    setCanScrollPrev(emblaApi.canScrollPrev());
+    setCanScrollNext(emblaApi.canScrollNext());
+  }, [emblaApi]);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -22,48 +31,44 @@ export default function PDFPreview({ previewPages, title, price, onPurchase }: P
     return () => {
       emblaApi.off('select', onSelect);
     };
-  }, [emblaApi]);
+  }, [emblaApi, onSelect]);
 
   const scrollPrev = () => emblaApi?.scrollPrev();
   const scrollNext = () => emblaApi?.scrollNext();
 
-  const onSelect = () => {
-    if (!emblaApi) return;
-    setCurrentSlide(emblaApi.selectedScrollSnap());
-  };
-
   return (
-    <div className="relative rounded-lg overflow-hidden border bg-background">
-      {/* Carousel container */}
-      <div className="relative overflow-hidden" ref={emblaRef}>
-        <div className="flex touch-pan-y">
-          {previewPages.map((page, index) => (
-            <div 
-              key={index} 
-              className="relative flex-[0_0_100%] min-w-0"
-              style={{ paddingBottom: '141.4%' }} // A4 aspect ratio
-            >
-              <img
-                src={page}
-                alt={`${title} - Page ${index + 1}`}
+    <div className="bg-muted rounded-lg p-4">
+      <h3 className="font-semibold mb-2">Preview</h3>
+      <p className="text-sm text-muted-foreground mb-2">
+        Sample pages are available to preview before purchase
+      </p>
+      
+      <div className="overflow-hidden rounded-md border" ref={emblaRef}>
+        <div className="flex">
+          {pages.map((page, index) => (
+            <div key={index} className="relative flex-[0_0_100%] min-w-0 overflow-hidden aspect-[3/4]">
+              <img 
+                src={page} 
+                alt={`${title || 'Note'} - Page ${index + 1}`}
                 className="absolute inset-0 w-full h-full object-cover"
               />
               
               {/* Lock overlay on last preview page */}
-              {index === previewPages.length - 1 && (
+              {index === pages.length - 1 && (
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/95 flex flex-col items-center justify-end p-6">
-                  <Lock className="h-10 w-10 text-primary mb-4" />
-                  <h3 className="text-xl font-bold mb-2">
-                    Get Full Access for ₹{price}
-                  </h3>
-                  <p className="text-muted-foreground text-center mb-4 max-w-sm">
-                    Unlock all pages and start learning today!
-                    Get access to 150+ pages of detailed notes.
+                  <div className="bg-primary/10 rounded-full p-3 mb-3">
+                    <Lock className="h-6 w-6 text-primary" />
+                  </div>
+                  <p className="text-center text-lg font-medium mb-2">Want to see more?</p>
+                  <p className="text-center text-sm text-muted-foreground mb-4">
+                    Purchase the full notes to access all {pages.length + 15}+ pages
                   </p>
-                  <Button
-                    size="lg"
-                    className="w-full max-w-xs"
+                  {price && (
+                    <div className="text-lg font-bold mb-3">₹{price}</div>
+                  )}
+                  <Button 
                     onClick={onPurchase}
+                    className="w-full mb-2"
                   >
                     <Download className="h-4 w-4 mr-2" />
                     Purchase Full Notes
@@ -74,40 +79,35 @@ export default function PDFPreview({ previewPages, title, price, onPurchase }: P
           ))}
         </div>
       </div>
-
-      {/* Navigation buttons */}
-      <button
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all"
-        onClick={scrollPrev}
-      >
-        <ChevronLeft className="h-6 w-6" />
-      </button>
-      <button
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all"
-        onClick={scrollNext}
-      >
-        <ChevronRight className="h-6 w-6" />
-      </button>
-
-      {/* Page indicators */}
-      <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
-        {previewPages.map((_, index) => (
-          <div
-            key={index}
-            className={`w-2 h-2 rounded-full transition-all ${
-              currentSlide === index 
-                ? "bg-primary w-4" 
-                : "bg-primary/50"
-            }`}
-          />
-        ))}
-      </div>
-
-      {/* Preview message */}
-      <div className="p-4 text-center border-t">
-        <p className="text-sm text-muted-foreground">
-          Previewing {previewPages.length} of 150+ pages. Purchase to access all content.
-        </p>
+      
+      {/* Navigation controls */}
+      <div className="flex items-center justify-between mt-3">
+        <div className="flex gap-1">
+          {pages.map((_, index) => (
+            <div 
+              key={index} 
+              className={`h-1.5 w-3 rounded-full ${index === currentSlide ? 'bg-primary' : 'bg-muted-foreground/30'}`}
+            />
+          ))}
+        </div>
+        <div className="flex gap-2">
+          <Button 
+            size="icon" 
+            variant="outline" 
+            onClick={scrollPrev}
+            disabled={!canScrollPrev}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <Button 
+            size="icon" 
+            variant="outline" 
+            onClick={scrollNext}
+            disabled={!canScrollNext}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );
