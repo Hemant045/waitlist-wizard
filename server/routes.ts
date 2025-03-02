@@ -3,7 +3,6 @@ import { createServer } from "http";
 import { storage } from "./storage";
 import { insertWaitlistSchema, insertOrderSchema } from "@shared/schema";
 import { ZodError } from "zod";
-import { createPaymentSession } from "./stripe";
 
 export async function registerRoutes(app: Express) {
   // Waitlist route
@@ -45,7 +44,7 @@ export async function registerRoutes(app: Express) {
   });
 
   // Payment routes
-  app.post("/api/checkout", async (req, res) => {
+  app.post("/api/orders", async (req, res) => {
     try {
       const data = insertOrderSchema.parse(req.body);
       const course = await storage.getCourse(data.courseId);
@@ -54,26 +53,48 @@ export async function registerRoutes(app: Express) {
         return res.status(404).json({ message: "Course not found" });
       }
 
-      const sessionId = await createPaymentSession(
-        course.id,
-        course.title,
-        Number(course.price),
-        data.email
-      );
-
       const order = await storage.createOrder({
         ...data,
-        stripeSessionId: sessionId,
         status: "pending"
       });
 
-      res.json({ sessionId, orderId: order.id });
+      res.json({ 
+        orderId: order.id,
+        amount: Number(course.price),
+        upiId: process.env.BUSINESS_UPI_ID || "your-upi@bank",
+        course: {
+          title: course.title,
+          description: course.description
+        }
+      });
     } catch (error) {
       if (error instanceof ZodError) {
         return res.status(400).json({ message: error.errors[0].message });
       }
       throw error;
     }
+  });
+
+  // Payment verification
+  app.post("/api/orders/:id/verify", async (req, res) => {
+    const { upiTransactionId } = req.body;
+    const orderId = Number(req.params.id);
+
+    if (!upiTransactionId) {
+      return res.status(400).json({ message: "UPI transaction ID is required" });
+    }
+
+    const order = await storage.getOrder(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    await storage.updateOrder(orderId, {
+      upiTransactionId,
+      status: "verification_pending"
+    });
+
+    res.json({ success: true });
   });
 
   return createServer(app);

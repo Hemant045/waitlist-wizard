@@ -21,7 +21,8 @@ export const orders = pgTable("orders", {
   id: serial("id").primaryKey(),
   courseId: serial("course_id").references(() => courses.id),
   email: text("email").notNull(),
-  stripeSessionId: text("stripe_session_id").notNull(),
+  upiTransactionId: text("upi_transaction_id"),
+  upiId: text("upi_id"),
   status: text("status").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull()
 });
@@ -30,7 +31,7 @@ export const insertCourseSchema = createInsertSchema(courses)
   .pick({ title: true, description: true, price: true, imageUrl: true });
 
 export const insertOrderSchema = createInsertSchema(orders)
-  .pick({ courseId: true, email: true });
+  .pick({ courseId: true, email: true, upiId: true, upiTransactionId: true });
 
 export const insertWaitlistSchema = createInsertSchema(waitlistEntries)
   .pick({ email: true })
