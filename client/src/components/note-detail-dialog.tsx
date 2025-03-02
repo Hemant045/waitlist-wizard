@@ -30,7 +30,7 @@ export default function NoteDetailDialog({ note, onPurchase }: NoteDetailDialogP
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full mt-4">Explore More</Button>
+        <Button className="w-full">Explore More</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-3xl">
         <DialogHeader>

@@ -115,14 +115,16 @@ export default function Notes() {
                 </div>
               </div>
               
-              {/* Content section */}
+              {/* Content section with price */}
               <div className="p-4">
                 <p className="text-muted-foreground mb-4">{note.description}</p>
+                <div className="flex items-center justify-end transition-opacity duration-300 group-hover:opacity-0">
+                  <p className="text-2xl font-bold text-primary">₹{note.price}</p>
+                </div>
               </div>
 
-              {/* Hover overlay for "Explore More" */}
-              <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-
+              {/* Hover overlay for "Explore More" that rises from the bottom */}
+              <div className="absolute bottom-0 left-0 right-0 bg-black/80 flex justify-center p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                 <NoteDetailDialog 
                   note={note}
                   onPurchase={() => {
