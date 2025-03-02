@@ -122,7 +122,7 @@ export default function Notes() {
               <div className="flex items-center justify-between mb-4">
                 <span className="text-sm text-muted-foreground">{note.pages} pages</span>
                 <p className="text-2xl font-bold">₹{note.price}</p>
-              </div>div>
+              </div>
 
               {/* PDF Preview with hover effect */}
               <div className="relative overflow-hidden rounded-lg border">
@@ -133,7 +133,7 @@ export default function Notes() {
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 </div>
-                
+
                 {/* Hover overlay */}
                 <div className="absolute inset-0 bg-background/80 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <NoteDetailDialog 
@@ -148,7 +148,7 @@ export default function Notes() {
             </CardContent>
           </Card>
         ))}
-      </div>v>
+      </div>
 
       {/* Trust indicators */}
       <section className="mt-16 text-center">
