@@ -1,6 +1,7 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, Download, ChevronRight } from "lucide-react";
+import PDFPreview from "@/components/pdf-preview";
 
 const notes = [
   {
@@ -14,6 +15,12 @@ const notes = [
       "Binary Search Tree",
       "Graphs",
       "Dynamic Programming"
+    ],
+    previewPages: [
+      "/preview/dsa/page1.jpg",
+      "/preview/dsa/page2.jpg",
+      "/preview/dsa/page3.jpg",
+      "/preview/dsa/page4.jpg"
     ],
     samplePdfUrl: "/sample-notes/dsa-preview.pdf",
     imageUrl: "/images/dsa-icon.png"
@@ -30,6 +37,12 @@ const notes = [
       "Node.js Basics",
       "API Integration"
     ],
+    previewPages: [
+      "/preview/webdev/page1.jpg",
+      "/preview/webdev/page2.jpg",
+      "/preview/webdev/page3.jpg",
+      "/preview/webdev/page4.jpg"
+    ],
     samplePdfUrl: "/sample-notes/webdev-preview.pdf",
     imageUrl: "/images/webdev-icon.png"
   },
@@ -45,6 +58,12 @@ const notes = [
       "Database Design",
       "Microservices"
     ],
+    previewPages: [
+      "/preview/system-design/page1.jpg",
+      "/preview/system-design/page2.jpg",
+      "/preview/system-design/page3.jpg",
+      "/preview/system-design/page4.jpg"
+    ],
     samplePdfUrl: "/sample-notes/system-design-preview.pdf",
     imageUrl: "/images/system-design-icon.png"
   }
@@ -53,10 +72,13 @@ const notes = [
 export default function Notes() {
   return (
     <main className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-4">Study Notes</h1>
-      <p className="text-xl text-muted-foreground mb-8">
-        High-quality study materials created by experts to help you learn better and faster.
-      </p>
+      <section className="text-center mb-12">
+        <h1 className="text-4xl font-bold mb-4">Handwritten Study Notes</h1>
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          High-quality study materials created by experts to help you learn better and faster. 
+          Each set of notes includes detailed explanations, diagrams, and examples.
+        </p>
+      </section>
 
       <div className="grid md:grid-cols-3 gap-8">
         {notes.map((note, index) => (
@@ -88,22 +110,45 @@ export default function Notes() {
                 <p className="text-2xl font-bold">₹{note.price}</p>
               </div>
 
-              {/* Sample PDF preview button */}
-              <Button variant="outline" className="w-full mb-2" onClick={() => window.open(note.samplePdfUrl)}>
-                <Download className="h-4 w-4 mr-2" />
-                View Sample PDF
-              </Button>
+              {/* PDF Preview */}
+              <PDFPreview
+                title={note.title}
+                previewPages={note.previewPages}
+                price={note.price}
+                onPurchase={() => {
+                  // Handle purchase flow
+                  console.log("Purchase clicked for", note.title);
+                }}
+              />
             </CardContent>
-
-            <CardFooter>
-              <Button className="w-full">Purchase Notes</Button>
-            </CardFooter>
-
-            {/* Hover effect overlay */}
-            <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </Card>
         ))}
       </div>
+
+      {/* Trust indicators */}
+      <section className="mt-16 text-center">
+        <h2 className="text-2xl font-semibold mb-6">Why Choose Our Notes?</h2>
+        <div className="grid md:grid-cols-3 gap-8">
+          <div className="p-6">
+            <h3 className="text-lg font-medium mb-2">Expert-Created Content</h3>
+            <p className="text-muted-foreground">
+              Notes prepared by experienced teachers and industry professionals
+            </p>
+          </div>
+          <div className="p-6">
+            <h3 className="text-lg font-medium mb-2">Easy to Understand</h3>
+            <p className="text-muted-foreground">
+              Clear explanations with practical examples and illustrations
+            </p>
+          </div>
+          <div className="p-6">
+            <h3 className="text-lg font-medium mb-2">Instant Access</h3>
+            <p className="text-muted-foreground">
+              Download immediately after purchase and start learning
+            </p>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
