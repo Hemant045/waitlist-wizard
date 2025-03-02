@@ -1,13 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { type Course } from "@shared/schema";
-import { useState } from "react";
-import CheckoutDialog from "./checkout-dialog";
 
 export default function CourseList() {
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  
   const { data: courses, isLoading } = useQuery<Course[]>({
     queryKey: ["/api/courses"]
   });
@@ -36,11 +33,11 @@ export default function CourseList() {
       <h2 className="text-3xl font-bold text-center mb-12">Our Courses</h2>
       <div className="grid md:grid-cols-3 gap-8">
         {courses?.map((course) => (
-          <Card key={course.id} className="overflow-hidden">
+          <Card key={course.id} className="overflow-hidden group hover:shadow-xl transition-all duration-300">
             <img
               src={course.imageUrl}
               alt={course.title}
-              className="w-full h-48 object-cover"
+              className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
             />
             <CardContent className="p-6">
               <h3 className="text-xl font-semibold mb-2">{course.title}</h3>
@@ -50,20 +47,16 @@ export default function CourseList() {
             <CardFooter className="p-6 pt-0">
               <Button 
                 className="w-full" 
-                onClick={() => setSelectedCourse(course)}
+                asChild
               >
-                Enroll Now
+                <Link href={`/courses/${course.id}`}>
+                  Learn More
+                </Link>
               </Button>
             </CardFooter>
           </Card>
         ))}
       </div>
-
-      <CheckoutDialog
-        course={selectedCourse}
-        open={!!selectedCourse}
-        onOpenChange={(open) => !open && setSelectedCourse(null)}
-      />
     </section>
   );
 }
