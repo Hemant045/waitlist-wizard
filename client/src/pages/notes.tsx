@@ -98,26 +98,21 @@ export default function Notes() {
         {notes.map((note, index) => (
           <Card key={index} className="group relative overflow-hidden hover:shadow-xl transition-all duration-300">
             <CardContent className="pt-6">
-              {/* Circle background for icon */}
-              <div className="w-24 h-24 bg-primary/10 rounded-full mx-auto mb-6 flex items-center justify-center">
-                <FileText className="h-12 w-12 text-primary" />
+              {/* Subject image instead of icon */}
+              <div className="w-24 h-24 bg-primary/10 rounded-full mx-auto mb-6 flex items-center justify-center overflow-hidden">
+                {note.imageUrl ? (
+                  <img 
+                    src={note.imageUrl} 
+                    alt={note.title} 
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <FileText className="h-12 w-12 text-primary" />
+                )}
               </div>
 
               <h3 className="text-xl font-semibold mb-2">{note.title}</h3>
               <p className="text-muted-foreground mb-4">{note.description}</p>
-
-              {/* Topics list */}
-              <div className="mb-4">
-                <h4 className="font-medium mb-2">Topics Covered:</h4>
-                <ul className="text-sm text-muted-foreground space-y-1">
-                  {note.topics.map((topic, i) => (
-                    <li key={i} className="flex items-center">
-                      <ChevronRight className="h-4 w-4 mr-1" />
-                      {topic}
-                    </li>
-                  ))}
-                </ul>
-              </div>
 
               <div className="flex items-center justify-between mb-4">
                 <span className="text-sm text-muted-foreground">{note.pages} pages</span>
