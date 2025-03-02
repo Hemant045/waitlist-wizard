@@ -33,7 +33,7 @@ export default function CourseList() {
       <h2 className="text-3xl font-bold text-center mb-12">Our Courses</h2>
       <div className="grid md:grid-cols-3 gap-8">
         {courses?.map((course) => (
-          <Card key={course.id} className="overflow-hidden group hover:shadow-xl transition-all duration-300">
+          <Card key={course.id} className="overflow-hidden group hover:shadow-xl transition-all duration-300 card-glow group hover-lift"> {/* Added classes for improved styling */}
             <img
               src={course.imageUrl}
               alt={course.title}

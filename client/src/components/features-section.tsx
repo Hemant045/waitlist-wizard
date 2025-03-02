@@ -30,14 +30,23 @@ export default function FeaturesSection() {
       </h2>
       <div className="grid md:grid-cols-3 gap-8">
         {features.map((feature, index) => (
-          <Card key={index} className="overflow-hidden transition-all hover:shadow-lg">
-            <img
-              src={feature.image}
-              alt={feature.title}
-              className="w-full h-48 object-cover"
-            />
-            <CardContent className="p-6">
-              <feature.icon className="h-8 w-8 text-primary mb-4" />
+          <Card 
+            key={index} 
+            className="overflow-hidden card-glow hover-lift group" 
+            style={{animationDelay: `${index * 200}ms`}}
+          >
+            <div className="relative overflow-hidden">
+              <img
+                src={feature.image}
+                alt={feature.title}
+                className="w-full h-48 object-cover transition-transform duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </div>
+            <CardContent className="p-6 relative z-10">
+              <div className="bg-primary/10 p-3 rounded-full w-14 h-14 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors">
+                <feature.icon className="h-7 w-7 text-primary" />
+              </div>
               <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
               <p className="text-muted-foreground">{feature.description}</p>
             </CardContent>

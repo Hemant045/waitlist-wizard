@@ -3,17 +3,21 @@ import { ChevronRight, GraduationCap, Target, Users } from "lucide-react";
 
 export default function HeroSection() {
   return (
-    <section className="py-20 text-center relative overflow-hidden">
-      {/* Background gradient */}
+    <section className="py-20 text-center relative overflow-hidden hero-gradient min-h-[85vh] flex items-center">
+      {/* Background elements */}
       <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
-
-      <div className="container mx-auto px-4 relative">
-        <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-8 animate-in slide-in-from-bottom duration-500">
-          <GraduationCap className="h-4 w-4" />
-          <span className="text-sm font-medium">Transform Your Career With Us</span>
+      
+      {/* Decorative floating circles */}
+      <div className="absolute top-20 left-20 w-64 h-64 bg-blue-500/5 rounded-full filter blur-3xl float-animation"></div>
+      <div className="absolute bottom-20 right-20 w-80 h-80 bg-purple-500/5 rounded-full filter blur-3xl float-animation" style={{animationDelay: '1s'}}></div>
+      
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-6 py-3 rounded-full mb-8 shadow-lg animate-in slide-in-from-bottom duration-500">
+          <GraduationCap className="h-5 w-5" />
+          <span className="text-sm font-semibold">Transform Your Career With Us</span>
         </div>
 
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent animate-in slide-in-from-bottom duration-500">
+        <h1 className="text-4xl md:text-7xl font-bold mb-8 gradient-text animate-in slide-in-from-bottom duration-500">
           Master New Skills &<br />Launch Your Tech Career
         </h1>
 
