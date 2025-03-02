@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { Lock, Download, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useEmblaCarousel from 'embla-carousel-react';
@@ -13,6 +14,15 @@ interface PDFPreviewProps {
 export default function PDFPreview({ previewPages, title, price, onPurchase }: PDFPreviewProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel();
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    
+    emblaApi.on('select', onSelect);
+    return () => {
+      emblaApi.off('select', onSelect);
+    };
+  }, [emblaApi]);
 
   const scrollPrev = () => emblaApi?.scrollPrev();
   const scrollNext = () => emblaApi?.scrollNext();
@@ -38,7 +48,7 @@ export default function PDFPreview({ previewPages, title, price, onPurchase }: P
                 alt={`${title} - Page ${index + 1}`}
                 className="absolute inset-0 w-full h-full object-cover"
               />
-
+              
               {/* Lock overlay on last preview page */}
               {index === previewPages.length - 1 && (
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/95 flex flex-col items-center justify-end p-6">

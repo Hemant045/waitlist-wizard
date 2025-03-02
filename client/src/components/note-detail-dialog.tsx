@@ -1,15 +1,14 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ChevronRight, Download, FileText } from "lucide-react";
+import PDFPreview from "@/components/pdf-preview"; // Placeholder component
 
 type NoteDetailDialogProps = {
   note: {
@@ -45,7 +44,7 @@ export default function NoteDetailDialog({ note, onPurchase }: NoteDetailDialogP
             <div className="w-20 h-20 bg-primary/10 rounded-full mb-4 flex items-center justify-center">
               <FileText className="h-10 w-10 text-primary" />
             </div>
-            
+
             <div className="mb-6">
               <h3 className="text-lg font-semibold mb-2">What You'll Learn</h3>
               <ul className="space-y-2">
@@ -68,14 +67,12 @@ export default function NoteDetailDialog({ note, onPurchase }: NoteDetailDialogP
               </ul>
             </div>
 
-            
-
             <div className="flex items-center justify-between mb-4">
               <span className="text-sm text-muted-foreground">{note.pages} pages</span>
               <p className="text-2xl font-bold">₹{note.price}</p>
             </div>
           </div>
-          
+
           <div className="space-y-4">
             <div className="bg-muted rounded-lg p-4">
               <h3 className="font-semibold mb-2">Note Details</h3>
@@ -90,32 +87,16 @@ export default function NoteDetailDialog({ note, onPurchase }: NoteDetailDialogP
                 <div>March 2024</div>
               </div>
             </div>
-            
-            <div className="bg-muted rounded-lg p-4">
-              <h3 className="font-semibold mb-2">Preview</h3>
-              <p className="text-sm text-muted-foreground mb-2">
-                Sample pages are available to preview before purchase
-              </p>
-              <div className="grid grid-cols-2 gap-2">
-                <img 
-                  src={note.previewPages[0]} 
-                  alt="Preview" 
-                  className="rounded border object-cover aspect-[3/4] w-full"
-                />
-                <img 
-                  src={note.previewPages[1]} 
-                  alt="Preview" 
-                  className="rounded border object-cover aspect-[3/4] w-full"
-                />
-              </div>
-            </div>
-            
-            <Button 
+
+            <PDFPreview pages={note.previewPages} /> {/* Added PDF preview component */}
+
+
+            <Button
               onClick={() => {
                 onPurchase();
                 setOpen(false);
               }}
-              size="lg" 
+              size="lg"
               className="w-full"
             >
               <Download className="h-4 w-4 mr-2" />
