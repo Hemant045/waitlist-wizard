@@ -69,6 +69,20 @@ const notes = [
   }
 ];
 
+export type Note = {
+  id?: number;
+  title: string;
+  description: string;
+  price: number;
+  pages: number;
+  topics: string[];
+  previewPages: string[];
+  samplePdfUrl?: string;
+  imageUrl?: string;
+};
+
+import NoteDetailDialog from "@/components/note-detail-dialog";
+
 export default function Notes() {
   return (
     <main className="container mx-auto px-4 py-8">
@@ -110,20 +124,36 @@ export default function Notes() {
                 <p className="text-2xl font-bold">₹{note.price}</p>
               </div>
 
-              {/* PDF Preview */}
-              <PDFPreview
-                title={note.title}
-                previewPages={note.previewPages}
-                price={note.price}
-                onPurchase={() => {
-                  // Handle purchase flow
-                  console.log("Purchase clicked for", note.title);
-                }}
-              />
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-sm text-muted-foreground">{note.pages} pages</span>
+                <p className="text-2xl font-bold">₹{note.price}</p>
+              </div>
+
+              {/* PDF Preview with hover effect */}
+              <div className="relative overflow-hidden rounded-lg border">
+                <div className="aspect-[3/4] overflow-hidden">
+                  <img 
+                    src={note.previewPages[0]} 
+                    alt={note.title} 
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
+                
+                {/* Hover overlay */}
+                <div className="absolute inset-0 bg-background/80 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <NoteDetailDialog 
+                    note={note}
+                    onPurchase={() => {
+                      // Handle purchase flow
+                      console.log("Purchase clicked for", note.title);
+                    }}
+                  />
+                </div>
+              </div>
             </CardContent>
           </Card>
         ))}
-      </div>
+      </div>v>
 
       {/* Trust indicators */}
       <section className="mt-16 text-center">
