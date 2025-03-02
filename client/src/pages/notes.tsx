@@ -108,10 +108,15 @@ export default function Notes() {
               {/* PDF Preview with hover effect */}
               <div className="relative overflow-hidden rounded-lg border">
                 <div className="aspect-[3/4] overflow-hidden">
+                  {/* Display the subject image as background */}
+                  <div 
+                    className="absolute inset-0 bg-cover bg-center" 
+                    style={{ backgroundImage: `url(${note.imageUrl})`, opacity: 0.15 }}
+                  />
                   <img 
                     src={note.previewPages[0]} 
                     alt={note.title} 
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105 relative z-10"
                   />
                 </div>
 
