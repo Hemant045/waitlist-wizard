@@ -1,10 +1,21 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import NoteDetailDialog from "@/components/note-detail-dialog";
-import { FileText, Download, ChevronRight, ChevronLeft, Lock } from "lucide-react";
-import PDFPreview from "@/components/pdf-preview";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { FileText, Download, ChevronRight, ChevronLeft, Lock } from "lucide-react";
 import { useState } from "react";
+import NoteDetailDialog from "@/components/note-detail-dialog";
+
+export type Note = {
+  id?: number;
+  title: string;
+  description: string;
+  price: number;
+  pages: number;
+  topics: string[];
+  previewPages: string[];
+  samplePdfUrl?: string;
+  imageUrl?: string;
+};
 
 const notes = [
   {
@@ -65,28 +76,19 @@ const notes = [
       "/preview/system-design/page1.jpg",
       "/preview/system-design/page2.jpg",
       "/preview/system-design/page3.jpg",
-      "/preview/system-design/page4.jpg"
+      "/preview/system-design/page4.jpg",
+      "/preview/system-design/page5.jpg"
     ],
     samplePdfUrl: "/sample-notes/system-design-preview.pdf",
     imageUrl: "/images/system-design-icon.png"
   }
 ];
 
-export type Note = {
-  id?: number;
-  title: string;
-  description: string;
-  price: number;
-  pages: number;
-  topics: string[];
-  previewPages: string[];
-  samplePdfUrl?: string;
-
 // Demo Preview Dialog Component
-function DemoPreviewDialog({ note }) {
+const DemoPreviewDialog = ({ note }) => {
   const [open, setOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
-  
+
   // Create 5 preview pages (limit for demo)
   const previewPages = note.previewPages || [
     "/preview/system-design/page1.jpg",
@@ -95,34 +97,34 @@ function DemoPreviewDialog({ note }) {
     "/preview/system-design/page4.jpg",
     "/preview/system-design/page5.jpg",
   ];
-  
+
   const totalPages = previewPages.length;
   const maxPreviewPages = 5; // Show only 5 pages in demo
-  
+
   const goToNextPage = () => {
     if (currentPage < maxPreviewPages - 1) {
       setCurrentPage(currentPage + 1);
     }
   };
-  
+
   const goToPrevPage = () => {
     if (currentPage > 0) {
       setCurrentPage(currentPage - 1);
     }
   };
-  
+
   return (
     <>
       <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
         Demo Notes
       </Button>
-      
+
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-3xl">
           <DialogTitle className="text-2xl font-bold text-center mb-4">
             {note.title} - Demo Preview
           </DialogTitle>
-          
+
           <div className="relative overflow-hidden rounded-lg border aspect-[3/4] bg-muted">
             {/* Current page display */}
             <div className="relative h-full w-full">
@@ -131,12 +133,12 @@ function DemoPreviewDialog({ note }) {
                 alt={`${note.title} - Page ${currentPage + 1}`}
                 className="h-full w-full object-contain"
               />
-              
+
               {/* Page counter */}
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
                 Page {currentPage + 1} of {maxPreviewPages}
               </div>
-              
+
               {/* Lock overlay on last preview page */}
               {currentPage === maxPreviewPages - 1 && (
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/95 flex flex-col items-center justify-end p-6">
@@ -163,7 +165,7 @@ function DemoPreviewDialog({ note }) {
                 </div>
               )}
             </div>
-            
+
             {/* Navigation buttons */}
             <Button 
               variant="outline" 
@@ -174,7 +176,7 @@ function DemoPreviewDialog({ note }) {
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            
+
             <Button 
               variant="outline" 
               size="icon" 
@@ -184,7 +186,7 @@ function DemoPreviewDialog({ note }) {
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
-            
+
             {/* Page indicators */}
             <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-1">
               {Array.from({ length: maxPreviewPages }).map((_, index) => (
@@ -202,12 +204,7 @@ function DemoPreviewDialog({ note }) {
       </Dialog>
     </>
   );
-}
-
-  imageUrl?: string;
 };
-
-import NoteDetailDialog from "@/components/note-detail-dialog";
 
 export default function Notes() {
   return (
