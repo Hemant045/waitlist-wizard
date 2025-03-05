@@ -1,5 +1,6 @@
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import NoteDetailDialog from "@/components/note-detail-dialog";
 import { FileText, Download, ChevronRight } from "lucide-react";
 import PDFPreview from "@/components/pdf-preview";
 
@@ -106,7 +107,7 @@ export default function Notes() {
                     alt={note.title} 
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
-                  
+
                   {/* Transparent overlay with title at bottom */}
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
                     <h3 className="text-xl font-semibold mb-1 text-white">{note.title}</h3>
@@ -114,7 +115,7 @@ export default function Notes() {
                   </div>
                 </div>
               </div>
-              
+
               {/* Content section with price - no topic information */}
               <div className="p-4">
                 <div className="flex items-center justify-end transition-opacity duration-300 group-hover:opacity-0">
@@ -124,13 +125,9 @@ export default function Notes() {
 
               {/* Hover overlay for "Explore More" that rises from the bottom */}
               <div className="absolute bottom-0 left-0 right-0 bg-black/80 flex justify-center p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                <NoteDetailDialog 
-                  note={note}
-                  onPurchase={() => {
-                    // Handle purchase flow
-                    console.log("Purchase clicked for", note.title);
-                  }}
-                />
+                <NoteDetailDialog note={note} onPurchase={() => {console.log("Purchase clicked for", note.title);}}/>
+                <Button variant="ghost" size="sm">Demo Notes</Button>
+
               </div>
             </CardContent>
           </Card>
@@ -141,7 +138,7 @@ export default function Notes() {
       <section className="mt-20 text-center">
         <h2 className="text-3xl font-bold mb-2 gradient-text">Why Choose Our Notes?</h2>
         <p className="text-muted-foreground max-w-2xl mx-auto mb-12">Our study notes are designed to help you excel in your exams and master complex subjects quickly</p>
-        
+
         <div className="grid md:grid-cols-3 gap-8">
           <Card className="p-6 card-glow hover-lift text-center">
             <div className="flex justify-center mb-4">
@@ -156,12 +153,12 @@ export default function Notes() {
               Notes prepared by experienced teachers and industry professionals with years of teaching experience
             </p>
           </Card>
-          
+
           <Card className="p-6 card-glow hover-lift text-center">
             <div className="flex justify-center mb-4">
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253" />
                 </svg>
               </div>
             </div>
@@ -170,7 +167,7 @@ export default function Notes() {
               Clear explanations with practical examples and illustrations that make complex topics simple
             </p>
           </Card>
-          
+
           <Card className="p-6 card-glow hover-lift text-center">
             <div className="flex justify-center mb-4">
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
