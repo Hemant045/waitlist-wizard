@@ -1,8 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import NoteDetailDialog from "@/components/note-detail-dialog";
-import { FileText, Download, ChevronRight } from "lucide-react";
+import { FileText, Download, ChevronRight, ChevronLeft, Lock } from "lucide-react";
 import PDFPreview from "@/components/pdf-preview";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { useState } from "react";
 
 const notes = [
   {
@@ -79,6 +81,129 @@ export type Note = {
   topics: string[];
   previewPages: string[];
   samplePdfUrl?: string;
+
+// Demo Preview Dialog Component
+function DemoPreviewDialog({ note }) {
+  const [open, setOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  
+  // Create 5 preview pages (limit for demo)
+  const previewPages = note.previewPages || [
+    "/preview/system-design/page1.jpg",
+    "/preview/system-design/page2.jpg",
+    "/preview/system-design/page3.jpg",
+    "/preview/system-design/page4.jpg",
+    "/preview/system-design/page5.jpg",
+  ];
+  
+  const totalPages = previewPages.length;
+  const maxPreviewPages = 5; // Show only 5 pages in demo
+  
+  const goToNextPage = () => {
+    if (currentPage < maxPreviewPages - 1) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  
+  const goToPrevPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+  
+  return (
+    <>
+      <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
+        Demo Notes
+      </Button>
+      
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-3xl">
+          <DialogTitle className="text-2xl font-bold text-center mb-4">
+            {note.title} - Demo Preview
+          </DialogTitle>
+          
+          <div className="relative overflow-hidden rounded-lg border aspect-[3/4] bg-muted">
+            {/* Current page display */}
+            <div className="relative h-full w-full">
+              <img 
+                src={previewPages[currentPage]} 
+                alt={`${note.title} - Page ${currentPage + 1}`}
+                className="h-full w-full object-contain"
+              />
+              
+              {/* Page counter */}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
+                Page {currentPage + 1} of {maxPreviewPages}
+              </div>
+              
+              {/* Lock overlay on last preview page */}
+              {currentPage === maxPreviewPages - 1 && (
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/95 flex flex-col items-center justify-end p-6">
+                  <div className="bg-primary/10 rounded-full p-3 mb-3">
+                    <Lock className="h-6 w-6 text-primary" />
+                  </div>
+                  <p className="text-center text-lg font-medium mb-2">Want to see more?</p>
+                  <p className="text-center text-sm text-muted-foreground mb-4">
+                    This is a preview. Purchase the full notes to access all content.
+                  </p>
+                  {note.price && (
+                    <div className="text-lg font-bold mb-3">₹{note.price}</div>
+                  )}
+                  <Button 
+                    onClick={() => {
+                      console.log("Purchase clicked for", note.title);
+                      setOpen(false);
+                    }}
+                    className="w-full mb-2"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Purchase Full Notes
+                  </Button>
+                </div>
+              )}
+            </div>
+            
+            {/* Navigation buttons */}
+            <Button 
+              variant="outline" 
+              size="icon" 
+              className="absolute top-1/2 left-2 -translate-y-1/2 rounded-full bg-background/80"
+              onClick={goToPrevPage}
+              disabled={currentPage === 0}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            
+            <Button 
+              variant="outline" 
+              size="icon" 
+              className="absolute top-1/2 right-2 -translate-y-1/2 rounded-full bg-background/80"
+              onClick={goToNextPage}
+              disabled={currentPage === maxPreviewPages - 1}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+            
+            {/* Page indicators */}
+            <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-1">
+              {Array.from({ length: maxPreviewPages }).map((_, index) => (
+                <div 
+                  key={index} 
+                  className={`h-1.5 w-3 rounded-full cursor-pointer ${
+                    index === currentPage ? 'bg-primary' : 'bg-muted-foreground/30'
+                  }`}
+                  onClick={() => setCurrentPage(index)}
+                />
+              ))}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+
   imageUrl?: string;
 };
 
@@ -124,10 +249,9 @@ export default function Notes() {
               </div>
 
               {/* Hover overlay for "Explore More" that rises from the bottom */}
-              <div className="absolute bottom-0 left-0 right-0 bg-black/80 flex justify-center p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+              <div className="absolute bottom-0 left-0 right-0 bg-black/80 flex justify-center gap-2 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                 <NoteDetailDialog note={note} onPurchase={() => {console.log("Purchase clicked for", note.title);}}/>
-                <Button variant="ghost" size="sm">Demo Notes</Button>
-
+                <DemoPreviewDialog note={note} />
               </div>
             </CardContent>
           </Card>
