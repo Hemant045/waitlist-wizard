@@ -4,6 +4,9 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { FileText, Download, ChevronRight, ChevronLeft, Lock } from "lucide-react";
 import { useState } from "react";
 import NoteDetailDialog from "@/components/note-detail-dialog";
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import { arrayBufferToBase64 } from '@/utils/base64';
+
 
 export type Note = {
   id?: number;
@@ -88,6 +91,20 @@ const notes = [
 const DemoPreviewDialog = ({ note }) => {
   const [open, setOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
+  const [pdfData, setPdfData] = useState<string | null>(null);
+
+  // Fetch PDF data (replace with actual PDF fetching logic)
+  const fetchPdf = async () => {
+    try {
+      const response = await fetch(note.samplePdfUrl!);
+      const blob = await response.blob();
+      const arrayBuffer = await blob.arrayBuffer();
+      const base64 = arrayBufferToBase64(arrayBuffer);
+      setPdfData(base64);
+    } catch (error) {
+      console.error('Error fetching PDF:', error);
+    }
+  };
 
   // Create 5 preview pages (limit for demo)
   const previewPages = note.previewPages || [
@@ -113,9 +130,13 @@ const DemoPreviewDialog = ({ note }) => {
     }
   };
 
+  //useEffect(() => {
+  //  fetchPdf();
+  //}, []);
+
   return (
     <>
-      <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
+      <Button variant="outline" size="sm" onClick={() => {setOpen(true); fetchPdf()}}>
         Demo Notes
       </Button>
 
@@ -126,20 +147,28 @@ const DemoPreviewDialog = ({ note }) => {
           </DialogTitle>
 
           <div className="relative overflow-hidden rounded-lg border aspect-[3/4] bg-muted">
-            {/* Current page display */}
             <div className="relative h-full w-full">
-              <img 
-                src={previewPages[currentPage]} 
-                alt={`${note.title} - Page ${currentPage + 1}`}
-                className="h-full w-full object-contain"
-              />
+              {pdfData ? (
+                <iframe
+                  src={`data:application/pdf;base64,${pdfData}`}
+                  width="100%"
+                  height="100%"
+                  title="PDF Preview"
+                  className="h-full w-full object-contain"
+                />
+              ) : (
+                <img
+                  src={previewPages[currentPage]}
+                  alt={`${note.title} - Page ${currentPage + 1}`}
+                  className="h-full w-full object-contain"
+                />
+              )}
 
-              {/* Page counter */}
+
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
                 Page {currentPage + 1} of {maxPreviewPages}
               </div>
 
-              {/* Lock overlay on last preview page */}
               {currentPage === maxPreviewPages - 1 && (
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/95 flex flex-col items-center justify-end p-6">
                   <div className="bg-primary/10 rounded-full p-3 mb-3">
@@ -152,7 +181,7 @@ const DemoPreviewDialog = ({ note }) => {
                   {note.price && (
                     <div className="text-lg font-bold mb-3">₹{note.price}</div>
                   )}
-                  <Button 
+                  <Button
                     onClick={() => {
                       console.log("Purchase clicked for", note.title);
                       setOpen(false);
@@ -166,10 +195,9 @@ const DemoPreviewDialog = ({ note }) => {
               )}
             </div>
 
-            {/* Navigation buttons */}
-            <Button 
-              variant="outline" 
-              size="icon" 
+            <Button
+              variant="outline"
+              size="icon"
               className="absolute top-1/2 left-2 -translate-y-1/2 rounded-full bg-background/80"
               onClick={goToPrevPage}
               disabled={currentPage === 0}
@@ -177,9 +205,9 @@ const DemoPreviewDialog = ({ note }) => {
               <ChevronLeft className="h-4 w-4" />
             </Button>
 
-            <Button 
-              variant="outline" 
-              size="icon" 
+            <Button
+              variant="outline"
+              size="icon"
               className="absolute top-1/2 right-2 -translate-y-1/2 rounded-full bg-background/80"
               onClick={goToNextPage}
               disabled={currentPage === maxPreviewPages - 1}
@@ -187,11 +215,10 @@ const DemoPreviewDialog = ({ note }) => {
               <ChevronRight className="h-4 w-4" />
             </Button>
 
-            {/* Page indicators */}
             <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-1">
               {Array.from({ length: maxPreviewPages }).map((_, index) => (
-                <div 
-                  key={index} 
+                <div
+                  key={index}
                   className={`h-1.5 w-3 rounded-full cursor-pointer ${
                     index === currentPage ? 'bg-primary' : 'bg-muted-foreground/30'
                   }`}
@@ -212,7 +239,7 @@ export default function Notes() {
       <section className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">Handwritten Study Notes</h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          High-quality study materials created by experts to help you learn better and faster. 
+          High-quality study materials created by experts to help you learn better and faster.
           Each set of notes includes detailed explanations, diagrams, and examples.
         </p>
       </section>
@@ -221,33 +248,25 @@ export default function Notes() {
         {notes.map((note, index) => (
           <Card key={index} className="group relative overflow-hidden hover:shadow-xl transition-all duration-300">
             <CardContent className="p-0">
-              {/* Subject image as card background */}
               <div className="relative overflow-hidden rounded-t-lg">
                 <div className="aspect-[3/4] overflow-hidden">
-                  <img 
-                    src={note.imageUrl || note.previewPages[0]} 
-                    alt={note.title} 
+                  <img
+                    src={note.imageUrl || note.previewPages[0]}
+                    alt={note.title}
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
-
-                  {/* Transparent overlay with title at bottom */}
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
                     <h3 className="text-xl font-semibold mb-1 text-white">{note.title}</h3>
                     <span className="text-sm text-white/70">{note.pages} pages</span>
                   </div>
                 </div>
               </div>
-
-              {/* Content section with price - no topic information */}
               <div className="p-4">
                 <div className="flex items-center justify-end transition-opacity duration-300 group-hover:opacity-0">
                   <p className="text-2xl font-bold text-primary">₹{note.price}</p>
                 </div>
               </div>
-
-              {/* Hover overlay for "Explore More" that rises from the bottom */}
               <div className="absolute bottom-0 left-0 right-0 bg-black/80 flex justify-center gap-2 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                <NoteDetailDialog note={note} onPurchase={() => {console.log("Purchase clicked for", note.title);}}/>
                 <DemoPreviewDialog note={note} />
               </div>
             </CardContent>
@@ -255,7 +274,6 @@ export default function Notes() {
         ))}
       </div>
 
-      {/* Trust indicators */}
       <section className="mt-20 text-center">
         <h2 className="text-3xl font-bold mb-2 gradient-text">Why Choose Our Notes?</h2>
         <p className="text-muted-foreground max-w-2xl mx-auto mb-12">Our study notes are designed to help you excel in your exams and master complex subjects quickly</p>
