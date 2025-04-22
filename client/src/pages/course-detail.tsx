@@ -37,7 +37,8 @@ export default function CourseDetail() {
   const [showCheckout, setShowCheckout] = useState(false);
 
   const { data: course, isLoading } = useQuery<Course>({
-    queryKey: [`/api/courses/${courseId}`]
+    queryKey: [`/api/courses/${courseId}`],
+    enabled: !!courseId
   });
 
   if (isLoading) {
