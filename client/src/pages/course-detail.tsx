@@ -540,7 +540,13 @@ export default function CourseDetail() {
 
   return (
     <div className="min-h-screen bg-background">
-      {children}
+      <div className="bg-gradient-to-r from-primary/10 to-primary/5 border-b">
+        {/* Hero Section Content */}
+      </div>
+      <section className="py-20 bg-muted/30">
+        {/* Section Content */}
+      </section>
+      {/* Other sections */}
     </div>
   );
 }
