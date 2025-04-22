@@ -116,10 +116,117 @@ export default function CourseDetail() {
     }
   ];
 
+  // Add course details based on course ID
+  const courseDetails = {
+    'web-development': {
+      highlights: [
+        { icon: Code, text: "Full Stack Development with MERN Stack" },
+        { icon: Laptop, text: "Modern Frontend Frameworks & Libraries" },
+        { icon: Shield, text: "Backend Security & Authentication" },
+        { icon: Building, text: "Real-world Architecture & Best Practices" }
+      ],
+      features: [
+        "Complete Guide from Basics to Advanced",
+        "Build 20+ Real World Projects",
+        "Industry Standard Best Practices",
+        "Database Design & Management",
+        "API Development & Integration",
+        "Deployment & DevOps Basics"
+      ]
+    },
+    'data-structures': {
+      highlights: [
+        { icon: Code, text: "Comprehensive DSA Coverage" },
+        { icon: Laptop, text: "Problem Solving Techniques" },
+        { icon: Shield, text: "Interview Preparation" },
+        { icon: Building, text: "System Design Basics" }
+      ],
+      features: [
+        "All Important Data Structures",
+        "Algorithm Analysis & Design",
+        "200+ Coding Problems",
+        "Interview Patterns",
+        "Memory Management",
+        "Time & Space Complexity"
+      ]
+    }
+  };
+
+  const details = courseDetails[courseId as keyof typeof courseDetails];
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Course Header */}
+      {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 border-b">
+        <div className="container mx-auto px-4 py-16">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="space-y-6">
+                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full">
+                  <Medal className="h-4 w-4" />
+                  <span className="text-sm font-medium">Bestseller Course</span>
+                </div>
+                <h1 className="text-4xl lg:text-5xl font-bold">{course.title}</h1>
+                <p className="text-xl text-muted-foreground">{course.description}</p>
+                
+                <div className="flex flex-wrap gap-6">
+                  <div className="flex items-center gap-2">
+                    <Timer className="h-5 w-5 text-primary" />
+                    <span>50+ Hours Content</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-primary" />
+                    <span>20+ Projects</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <GraduationCap className="h-5 w-5 text-primary" />
+                    <span>Certificate Included</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <div>
+                    <p className="text-3xl font-bold">₹{Number(course.price).toLocaleString('en-IN')}</p>
+                    <p className="text-sm text-muted-foreground">One-time payment, lifetime access</p>
+                  </div>
+                  <Button size="lg" onClick={() => setShowCheckout(true)}>
+                    Enroll Now
+                  </Button>
+                </div>
+              </div>
+            </div>
+            
+            <div className="relative">
+              <Card className="overflow-hidden">
+                <img
+                  src={course.imageUrl}
+                  alt={course.title}
+                  className="w-full aspect-video object-cover"
+                />
+                <CardContent className="p-6 space-y-6">
+                  <div className="flex justify-between items-center">
+                    <div className="flex">
+                      {[1, 2, 3, 4, 5].map(i => (
+                        <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                      ))}
+                    </div>
+                    <span className="text-sm text-muted-foreground">500+ students enrolled</span>
+                  </div>
+                  
+                  {details && details.highlights.map((highlight, index) => (
+                    <div key={index} className="flex items-center gap-3">
+                      <div className="bg-primary/10 p-2 rounded-lg">
+                        <highlight.icon className="h-5 w-5 text-primary" />
+                      </div>
+                      <span>{highlight.text}</span>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
         <div className="container mx-auto px-4 py-12">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -192,10 +299,38 @@ export default function CourseDetail() {
         </div>
       </div>
 
+      {/* Key Features */}
+      <section className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-4">What You'll Learn</h2>
+          <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
+            Master these in-demand skills and boost your career opportunities
+          </p>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {details && details.features.map((feature, index) => (
+              <Card key={index} className="border-2 hover:border-primary/50 transition-all">
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="bg-primary/10 p-2 rounded-full">
+                      <CheckCircle2 className="h-5 w-5 text-primary" />
+                    </div>
+                    <h3 className="font-semibold">{feature}</h3>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Course Benefits */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">What You'll Get</h2>
+          <h2 className="text-3xl font-bold text-center mb-4">What You'll Get</h2>
+          <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
+            Everything you need to succeed in your learning journey
+          </p>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {benefits.map((benefit, index) => (
               <Card key={index} className="border-2 hover:border-primary/50 transition-all">
