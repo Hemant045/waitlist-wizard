@@ -537,4 +537,10 @@ export default function CourseDetail() {
       />
     </div>
   );
+
+  return (
+    <div className="min-h-screen bg-background">
+      {children}
+    </div>
+  );
 }
