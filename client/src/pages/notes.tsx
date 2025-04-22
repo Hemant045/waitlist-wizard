@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
+import Footer from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { FileText, Download, ChevronRight, ChevronLeft, Lock } from "lucide-react";
@@ -456,5 +457,6 @@ export default function Notes() {
         </div>
       </section>
     </main>
+    <Footer />
   );
 }

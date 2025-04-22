@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import Footer from "@/components/footer";
 import { GraduationCap, Users, Trophy, Target } from "lucide-react";
 
 export default function About() {
@@ -81,5 +82,6 @@ export default function About() {
         </Card>
       </section>
     </main>
+    <Footer />
   );
 }
