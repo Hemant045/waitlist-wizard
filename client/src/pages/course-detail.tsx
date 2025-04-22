@@ -1,4 +1,3 @@
-
 import { useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { type Course } from "@shared/schema";
@@ -20,7 +19,15 @@ import {
   Users, 
   ChevronRight, 
   Star,
-  CheckCircle2
+  CheckCircle2,
+  BookOpen,
+  Timer,
+  Video,
+  FileText,
+  MessageSquare,
+  Globe,
+  Building,
+  Medal
 } from "lucide-react";
 import CheckoutDialog from "@/components/checkout-dialog";
 import { useState } from "react";
@@ -47,146 +54,114 @@ export default function CourseDetail() {
 
   const curriculum = [
     {
-      title: "Getting Started",
-      description: "Learn the fundamentals and set up your development environment",
+      title: "Introduction to the Course",
       lessons: [
-        "Introduction to the Course",
-        "Setting Up Your Development Environment",
-        "Understanding the Tech Stack",
-        "Building Your First Project"
+        "Course Overview and Setup",
+        "Understanding the Learning Path",
+        "Required Tools and Software",
+        "Setting Up Your Development Environment"
       ]
     },
     {
       title: "Core Concepts",
-      description: "Master the essential concepts and patterns",
       lessons: [
-        "Building Your First Component",
-        "State Management Deep Dive",
+        "Fundamentals of Web Development",
+        "Building Your First Project",
         "Working with APIs",
-        "Authentication and Authorization"
+        "Modern Development Practices"
       ]
     },
     {
       title: "Advanced Topics",
-      description: "Take your skills to the next level",
       lessons: [
-        "Advanced State Management",
+        "Real-world Project Implementation",
         "Performance Optimization",
-        "Testing Strategies",
-        "Deployment Best Practices"
+        "Security Best Practices",
+        "Deployment and Scaling"
       ]
     }
   ];
 
-  const features = [
+  const benefits = [
     {
-      icon: Clock,
+      icon: Video,
+      title: "High-Quality Video Content",
+      description: "Crystal clear video lectures with detailed explanations"
+    },
+    {
+      icon: FileText,
+      title: "Comprehensive Notes",
+      description: "Detailed course notes and documentation"
+    },
+    {
+      icon: MessageSquare,
+      title: "Discord Community",
+      description: "Access to exclusive student community"
+    },
+    {
+      icon: Globe,
       title: "Lifetime Access",
-      description: "Learn at your own pace with unlimited access to all course content"
+      description: "Learn at your own pace with unlimited access"
     },
     {
-      icon: Code,
-      title: "Project-Based Learning",
-      description: "Build real-world projects to add to your portfolio"
+      icon: Building,
+      title: "Industry Projects",
+      description: "Real-world projects for your portfolio"
     },
     {
-      icon: Users,
-      title: "Community Support",
-      description: "Join our active Discord community of students and developers"
-    },
-    {
-      icon: Shield,
-      title: "30-Day Guarantee",
-      description: "Not satisfied? Get a full refund within 30 days"
+      icon: Medal,
+      title: "Completion Certificate",
+      description: "Earn a certificate upon completion"
     }
-  ];
-
-  const testimonials = [
-    {
-      name: "Arjun Sharma",
-      role: "Front-end Developer",
-      text: "This course was a game-changer for my career. I was struggling with advanced concepts, but the explanations were so clear that I finally had those 'aha' moments.",
-      rating: 5
-    },
-    {
-      name: "Priya Patel",
-      role: "CS Student",
-      text: "As a student, I was looking for practical education beyond what my university offered. This course delivered exactly that with real-world projects.",
-      rating: 5
-    },
-    {
-      name: "Rahul Gupta",
-      role: "Software Engineer",
-      text: "Even as an experienced developer, I learned so many new techniques and best practices. The instructor's attention to detail is impressive.",
-      rating: 4
-    }
-  ];
-
-  const whatYouWillLearn = [
-    "Build fully-functional web applications from scratch",
-    "Master modern JavaScript, React, and backend technologies",
-    "Implement authentication, payment processing, and database operations",
-    "Deploy applications to production with CI/CD pipelines",
-    "Optimize performance and handle security considerations",
-    "Create responsive designs that work on all devices"
   ];
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section with Gradient Background */}
-      <section className="relative py-24 overflow-hidden bg-gradient-to-r from-primary/10 via-primary/5 to-background border-b">
-        <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+      {/* Course Header */}
+      <div className="bg-gradient-to-r from-primary/10 to-primary/5 border-b">
+        <div className="container mx-auto px-4 py-12">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="inline-block px-4 py-1 mb-6 text-sm font-medium text-primary bg-primary/10 rounded-full">
-                {course.price > 10000 ? "Bestseller" : "New Course"}
+              <div className="inline-block px-4 py-1 mb-6 text-sm font-medium bg-primary/10 text-primary rounded-full">
+                {courseId === 'web-development' ? 'Web Development' : 
+                 courseId === 'data-structures' ? 'Data Structures & Algorithms' : 
+                 'Mobile Development'}
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-                {course.title}
-              </h1>
-              <p className="text-xl text-muted-foreground mb-8">
-                {course.description}
-              </p>
-              <div className="space-y-4 mb-8">
+              <h1 className="text-4xl font-bold mb-6">{course.title}</h1>
+              <p className="text-xl text-muted-foreground mb-8">{course.description}</p>
+              <div className="flex flex-wrap gap-6 mb-8">
                 <div className="flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-primary" />
-                  <span>40+ hours of video content</span>
+                  <Video className="h-5 w-5 text-primary" />
+                  <span>40+ hours content</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Code className="h-5 w-5 text-primary" />
-                  <span>15+ hands-on projects</span>
+                  <FileText className="h-5 w-5 text-primary" />
+                  <span>Course materials</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-primary" />
-                  <span>Join 1000+ successful students</span>
+                  <Globe className="h-5 w-5 text-primary" />
+                  <span>Lifetime access</span>
                 </div>
               </div>
-              <div className="flex gap-4 flex-wrap">
+              <div className="flex gap-4">
                 <Button size="lg" onClick={() => setShowCheckout(true)}>
-                  Enroll Now
-                  <ChevronRight className="ml-2 h-4 w-4" />
+                  Enroll Now - ₹{Number(course.price).toLocaleString('en-IN')}
                 </Button>
-                <Button size="lg" variant="outline" onClick={() => {
-                  document.querySelector("#curriculum")?.scrollIntoView({ behavior: "smooth" });
-                }}>
+                <Button size="lg" variant="outline">
                   View Curriculum
                 </Button>
               </div>
             </div>
-            <div className="relative">
-              <Card className="overflow-hidden border-2 border-primary/20 shadow-xl">
-                <div className="absolute top-0 right-0 bg-primary text-white px-4 py-1 text-sm font-bold z-10">
-                  {Number(course.price) > 8000 ? "20% OFF" : "10% OFF"}
-                </div>
-                <CardContent className="p-0">
-                  <img
-                    src={course.imageUrl}
-                    alt={course.title}
-                    className="w-full h-64 object-cover"
-                  />
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-4">
+            <div>
+              <Card className="overflow-hidden">
+                <img
+                  src={course.imageUrl}
+                  alt={course.title}
+                  className="w-full aspect-video object-cover"
+                />
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
                       <div className="flex">
                         {[1, 2, 3, 4, 5].map(i => (
                           <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
@@ -194,20 +169,19 @@ export default function CourseDetail() {
                       </div>
                       <span className="text-sm text-muted-foreground">200+ reviews</span>
                     </div>
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Price</span>
-                        <div>
-                          <span className="text-xl font-bold">₹{Number(course.price).toLocaleString('en-IN')}</span>
-                          <span className="text-muted-foreground line-through ml-2">₹{Math.round(Number(course.price) * 1.2).toLocaleString('en-IN')}</span>
-                        </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Timer className="h-5 w-5 text-primary" />
+                        <span>Course Duration: 3 months</span>
                       </div>
-                      <Button size="lg" className="w-full" onClick={() => setShowCheckout(true)}>
-                        Enroll Now
-                      </Button>
-                      <p className="text-sm text-center text-muted-foreground">
-                        30-day money-back guarantee
-                      </p>
+                      <div className="flex items-center gap-2">
+                        <BookOpen className="h-5 w-5 text-primary" />
+                        <span>15+ Projects Included</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Users className="h-5 w-5 text-primary" />
+                        <span>1000+ Students Enrolled</span>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -215,52 +189,47 @@ export default function CourseDetail() {
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* What You'll Learn Section */}
+      {/* Course Benefits */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            What You'll Learn
-          </h2>
-          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {whatYouWillLearn.map((item, index) => (
-              <div key={index} className="flex gap-3">
-                <CheckCircle2 className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
-                <span>{item}</span>
-              </div>
+          <h2 className="text-3xl font-bold text-center mb-12">What You'll Get</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {benefits.map((benefit, index) => (
+              <Card key={index} className="border-2 hover:border-primary/50 transition-all">
+                <CardContent className="p-6">
+                  <benefit.icon className="h-10 w-10 text-primary mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">{benefit.title}</h3>
+                  <p className="text-muted-foreground">{benefit.description}</p>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
       {/* Course Curriculum */}
-      <section id="curriculum" className="py-20 bg-primary/5">
+      <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-6">
-            Course Curriculum
-          </h2>
-          <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-            This comprehensive curriculum is designed to take you from beginner to professional level. 
-            Each section builds on the previous one, ensuring a smooth learning experience.
-          </p>
+          <h2 className="text-3xl font-bold text-center mb-12">Course Curriculum</h2>
           <div className="max-w-3xl mx-auto">
-            <Accordion type="single" collapsible className="bg-white shadow-md rounded-lg overflow-hidden">
+            <Accordion type="single" collapsible className="bg-background rounded-lg shadow-lg">
               {curriculum.map((section, index) => (
                 <AccordionItem key={index} value={`section-${index}`} className="border-b last:border-0">
                   <AccordionTrigger className="px-6 py-4 hover:bg-muted/30">
-                    <div className="text-left">
-                      <h3 className="text-lg font-semibold">{section.title}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {section.description}
-                      </p>
+                    <div className="flex items-center gap-3">
+                      <div className="bg-primary/10 p-2 rounded-lg">
+                        <BookOpen className="h-5 w-5 text-primary" />
+                      </div>
+                      <span className="font-semibold">{section.title}</span>
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="px-6 pb-4">
-                    <ul className="space-y-3 pl-6">
+                    <ul className="space-y-3">
                       {section.lessons.map((lesson, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <Check className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                        <li key={i} className="flex items-center gap-3">
+                          <Video className="h-4 w-4 text-primary" />
                           <span>{lesson}</span>
                         </li>
                       ))}
@@ -269,29 +238,6 @@ export default function CourseDetail() {
                 </AccordionItem>
               ))}
             </Accordion>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Grid */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-6">
-            Course Features
-          </h2>
-          <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-            We've designed this course to provide you with the best learning experience possible.
-          </p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
-              <Card key={index} className="overflow-hidden border hover:border-primary/50 transition-all duration-300 hover:shadow-lg">
-                <CardContent className="p-6">
-                  <feature.icon className="h-10 w-10 text-primary mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
-                </CardContent>
-              </Card>
-            ))}
           </div>
         </div>
       </section>
@@ -427,7 +373,7 @@ export default function CourseDetail() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 bg-gradient-to-r from-primary to-primary/80 text-white">
+      <section className="py-20 bg-primary text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-6">
             Ready to Start Your Journey?
