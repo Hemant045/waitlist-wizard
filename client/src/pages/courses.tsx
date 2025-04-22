@@ -4,9 +4,11 @@ import Footer from "@/components/footer";
 
 export default function Courses() {
   return (
-    <main>
-      <CourseList />
-    </main>
-    <Footer />
+    <>
+      <main>
+        <CourseList />
+      </main>
+      <Footer />
+    </>
   );
 }
