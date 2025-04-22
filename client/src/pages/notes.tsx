@@ -90,8 +90,17 @@ const notes = [
 // Demo Preview Dialog Component
 const DemoPreviewDialog = ({ note }) => {
   const [open, setOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0);
   const [pdfData, setPdfData] = useState<string | null>(null);
+  
+  // Refs for 3D transform effect
+  const slideContainerRef = useRef<HTMLDivElement>(null);
+  const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
+  
+  // State for carousel
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
 
   // Fetch PDF data (replace with actual PDF fetching logic)
   const fetchPdf = async () => {
@@ -115,24 +124,118 @@ const DemoPreviewDialog = ({ note }) => {
     "/preview/system-design/page5.jpg",
   ];
 
-  const totalPages = previewPages.length;
   const maxPreviewPages = 5; // Show only 5 pages in demo
 
-  const goToNextPage = () => {
-    if (currentPage < maxPreviewPages - 1) {
-      setCurrentPage(currentPage + 1);
+  // Handle mouse events for dragging effect
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!slideContainerRef.current) return;
+    setIsDragging(true);
+    setStartX(e.pageX - slideContainerRef.current.offsetLeft);
+    setScrollLeft(slideContainerRef.current.scrollLeft);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    
+    // Snap to closest page
+    if (slideContainerRef.current) {
+      const slideWidth = slideContainerRef.current.offsetWidth * 0.8; // 80% width per slide
+      const closestIndex = Math.round(slideContainerRef.current.scrollLeft / slideWidth);
+      slideContainerRef.current.scrollTo({
+        left: closestIndex * slideWidth,
+        behavior: 'smooth'
+      });
+      setCurrentIndex(closestIndex);
     }
   };
 
-  const goToPrevPage = () => {
-    if (currentPage > 0) {
-      setCurrentPage(currentPage - 1);
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging || !slideContainerRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - slideContainerRef.current.offsetLeft;
+    const walk = (x - startX) * 1.5; // Scroll speed multiplier
+    slideContainerRef.current.scrollLeft = scrollLeft - walk;
+    
+    // Update transforms while dragging
+    updateTransforms();
+  };
+  
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+  };
+  
+  // Navigate between pages
+  const goToPage = (index: number) => {
+    if (!slideContainerRef.current) return;
+    if (index >= 0 && index < maxPreviewPages) {
+      const slideWidth = slideContainerRef.current.offsetWidth * 0.8; // 80% width per slide
+      slideContainerRef.current.scrollTo({
+        left: index * slideWidth,
+        behavior: 'smooth'
+      });
+      setCurrentIndex(index);
     }
   };
-
-  //useEffect(() => {
-  //  fetchPdf();
-  //}, []);
+  
+  const goToNextPage = () => goToPage(currentIndex + 1);
+  const goToPrevPage = () => goToPage(currentIndex - 1);
+  
+  // Update 3D transform effects based on scroll position
+  const updateTransforms = () => {
+    if (!slideContainerRef.current) return;
+    
+    const containerWidth = slideContainerRef.current.offsetWidth;
+    const slideWidth = containerWidth * 0.8; // 80% width per slide
+    const scrollPosition = slideContainerRef.current.scrollLeft;
+    
+    slideRefs.current.forEach((slideRef, index) => {
+      if (!slideRef) return;
+      
+      const slideCenter = index * slideWidth;
+      const distanceFromCenter = slideCenter - scrollPosition;
+      const percentFromCenter = distanceFromCenter / containerWidth;
+      
+      // Apply 3D transforms
+      const rotateY = percentFromCenter * 30; // 30 degrees max rotation
+      const scale = Math.max(0.8, 1 - Math.abs(percentFromCenter) * 0.2);
+      const translateZ = -Math.abs(percentFromCenter) * 100;
+      const opacity = Math.max(0.5, 1 - Math.abs(percentFromCenter) * 0.5);
+      
+      slideRef.style.transform = `perspective(1000px) rotateY(${rotateY}deg) scale(${scale}) translateZ(${translateZ}px)`;
+      slideRef.style.opacity = `${opacity}`;
+      slideRef.style.zIndex = `${Math.round(10 - Math.abs(percentFromCenter) * 10)}`;
+    });
+    
+    // Update current index based on scroll
+    const newIndex = Math.round(scrollPosition / slideWidth);
+    if (newIndex !== currentIndex && newIndex >= 0 && newIndex < maxPreviewPages) {
+      setCurrentIndex(newIndex);
+    }
+  };
+  
+  // Scroll event handler
+  const handleScroll = () => {
+    if (isDragging) return;
+    updateTransforms();
+  };
+  
+  // Effect to set up scroll listener
+  useEffect(() => {
+    const container = slideContainerRef.current;
+    if (container) {
+      container.addEventListener('scroll', handleScroll);
+      return () => container.removeEventListener('scroll', handleScroll);
+    }
+  }, []);
+  
+  // Effect to update transforms when container changes or on mount
+  useEffect(() => {
+    if (open) {
+      setTimeout(() => {
+        updateTransforms();
+      }, 100);
+    }
+  }, [open]);
 
   return (
     <>
@@ -141,91 +244,121 @@ const DemoPreviewDialog = ({ note }) => {
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-3xl">
+        <DialogContent className="max-w-4xl">
           <DialogTitle className="text-2xl font-bold text-center mb-4">
             {note.title} - Demo Preview
           </DialogTitle>
 
-          <div className="relative overflow-hidden rounded-lg border aspect-[3/4] bg-muted">
-            <div className="relative h-full w-full">
-              {pdfData ? (
-                <iframe
-                  src={`data:application/pdf;base64,${pdfData}`}
-                  width="100%"
-                  height="100%"
-                  title="PDF Preview"
-                  className="h-full w-full object-contain"
-                />
-              ) : (
-                <img
-                  src={previewPages[currentPage]}
-                  alt={`${note.title} - Page ${currentPage + 1}`}
-                  className="h-full w-full object-contain"
-                />
-              )}
+          <div className="bg-muted/20 p-4 rounded-lg">
+            <div 
+              className="relative overflow-x-auto py-8 hide-scrollbar" 
+              style={{ perspective: '1000px' }}
+              ref={slideContainerRef}
+              onMouseDown={handleMouseDown}
+              onMouseUp={handleMouseUp}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+            >
+              <div className="flex pl-[10%] pr-[10%] gap-[5%]">
+                {previewPages.map((page, index) => (
+                  <div
+                    key={index}
+                    ref={el => slideRefs.current[index] = el}
+                    className="relative flex-[0_0_80%] min-w-0 aspect-[3/4] transition-all duration-300"
+                    style={{
+                      transformStyle: 'preserve-3d',
+                      boxShadow: '0 8px 30px rgba(0,0,0,0.2)',
+                      transform: 'rotateY(0deg) scale(1)',
+                    }}
+                  >
+                    {pdfData && false ? (
+                      <iframe
+                        src={`data:application/pdf;base64,${pdfData}`}
+                        width="100%"
+                        height="100%"
+                        title="PDF Preview"
+                        className="h-full w-full bg-white rounded-lg"
+                      />
+                    ) : (
+                      <img
+                        src={page}
+                        alt={`${note.title} - Page ${index + 1}`}
+                        className="h-full w-full object-contain bg-white rounded-lg border"
+                      />
+                    )}
 
+                    {/* Page number */}
+                    <div className="absolute bottom-3 right-3 bg-black/70 text-white px-3 py-1 rounded-full text-sm">
+                      {index + 1} / {maxPreviewPages}
+                    </div>
 
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
-                Page {currentPage + 1} of {maxPreviewPages}
+                    {/* Lock overlay on last preview page */}
+                    {index === maxPreviewPages - 1 && (
+                      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/95 flex flex-col items-center justify-end p-6 rounded-lg">
+                        <div className="bg-primary/10 rounded-full p-3 mb-3">
+                          <Lock className="h-6 w-6 text-primary" />
+                        </div>
+                        <p className="text-center text-lg font-medium mb-2">Want to see more?</p>
+                        <p className="text-center text-sm text-muted-foreground mb-4">
+                          This is a preview. Purchase the full notes to access all content.
+                        </p>
+                        {note.price && (
+                          <div className="text-lg font-bold mb-3">₹{note.price}</div>
+                        )}
+                        <Button
+                          onClick={() => {
+                            console.log("Purchase clicked for", note.title);
+                            setOpen(false);
+                          }}
+                          className="w-full mb-2"
+                        >
+                          <Download className="h-4 w-4 mr-2" />
+                          Purchase Full Notes
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Navigation controls */}
+            <div className="flex items-center justify-between mt-4">
+              <Button
+                variant="outline"
+                size="icon"
+                className="rounded-full bg-background/80 shadow-sm"
+                onClick={goToPrevPage}
+                disabled={currentIndex === 0}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+
+              <div className="flex gap-2">
+                {Array.from({ length: maxPreviewPages }).map((_, index) => (
+                  <div
+                    key={index}
+                    className={`h-2 rounded-full cursor-pointer transition-transform duration-300 
+                      ${index === currentIndex ? 'bg-primary w-8' : 'bg-muted-foreground/30 w-2'}`}
+                    onClick={() => goToPage(index)}
+                  />
+                ))}
               </div>
 
-              {currentPage === maxPreviewPages - 1 && (
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/95 flex flex-col items-center justify-end p-6">
-                  <div className="bg-primary/10 rounded-full p-3 mb-3">
-                    <Lock className="h-6 w-6 text-primary" />
-                  </div>
-                  <p className="text-center text-lg font-medium mb-2">Want to see more?</p>
-                  <p className="text-center text-sm text-muted-foreground mb-4">
-                    This is a preview. Purchase the full notes to access all content.
-                  </p>
-                  {note.price && (
-                    <div className="text-lg font-bold mb-3">₹{note.price}</div>
-                  )}
-                  <Button
-                    onClick={() => {
-                      console.log("Purchase clicked for", note.title);
-                      setOpen(false);
-                    }}
-                    className="w-full mb-2"
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                    Purchase Full Notes
-                  </Button>
-                </div>
-              )}
+              <Button
+                variant="outline"
+                size="icon"
+                className="rounded-full bg-background/80 shadow-sm"
+                onClick={goToNextPage}
+                disabled={currentIndex === maxPreviewPages - 1}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
             </div>
 
-            <Button
-              variant="outline"
-              size="icon"
-              className="absolute top-1/2 left-2 -translate-y-1/2 rounded-full bg-background/80"
-              onClick={goToPrevPage}
-              disabled={currentPage === 0}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-
-            <Button
-              variant="outline"
-              size="icon"
-              className="absolute top-1/2 right-2 -translate-y-1/2 rounded-full bg-background/80"
-              onClick={goToNextPage}
-              disabled={currentPage === maxPreviewPages - 1}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-
-            <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-1">
-              {Array.from({ length: maxPreviewPages }).map((_, index) => (
-                <div
-                  key={index}
-                  className={`h-1.5 w-3 rounded-full cursor-pointer ${
-                    index === currentPage ? 'bg-primary' : 'bg-muted-foreground/30'
-                  }`}
-                  onClick={() => setCurrentPage(index)}
-                />
-              ))}
-            </div>
+            <p className="text-sm text-muted-foreground text-center mt-4">
+              Drag to flip through pages or use the navigation controls
+            </p>
           </div>
         </DialogContent>
       </Dialog>
