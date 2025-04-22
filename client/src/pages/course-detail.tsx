@@ -1,5 +1,6 @@
 import { useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
 import { type Course } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -27,7 +28,15 @@ import {
   MessageSquare,
   Globe,
   Building,
-  Medal
+  Medal,
+  ArrowRight,
+  BarChart,
+  Zap,
+  Play,
+  Download,
+  AlertCircle,
+  Calendar,
+  Lock
 } from "lucide-react";
 import CheckoutDialog from "@/components/checkout-dialog";
 import { useState } from "react";

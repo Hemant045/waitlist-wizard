@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { FileText, Download, ChevronRight, ChevronLeft, Lock } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import NoteDetailDialog from "@/components/note-detail-dialog";
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import { arrayBufferToBase64 } from '@/utils/base64';
@@ -88,7 +88,7 @@ const notes = [
 ];
 
 // Demo Preview Dialog Component
-const DemoPreviewDialog = ({ note }) => {
+const DemoPreviewDialog = ({ note }: { note: Note }) => {
   const [open, setOpen] = useState(false);
   const [pdfData, setPdfData] = useState<string | null>(null);
   
@@ -188,7 +188,7 @@ const DemoPreviewDialog = ({ note }) => {
     const slideWidth = containerWidth * 0.8; // 80% width per slide
     const scrollPosition = slideContainerRef.current.scrollLeft;
     
-    slideRefs.current.forEach((slideRef, index) => {
+    slideRefs.current.forEach((slideRef: HTMLDivElement | null, index: number) => {
       if (!slideRef) return;
       
       const slideCenter = index * slideWidth;
@@ -260,7 +260,7 @@ const DemoPreviewDialog = ({ note }) => {
               onMouseLeave={handleMouseLeave}
             >
               <div className="flex pl-[10%] pr-[10%] gap-[5%]">
-                {previewPages.map((page, index) => (
+                {previewPages.map((page: string, index: number) => (
                   <div
                     key={index}
                     ref={el => slideRefs.current[index] = el}
