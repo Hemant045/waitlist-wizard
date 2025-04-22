@@ -38,8 +38,9 @@ export async function registerRoutes(app: Express) {
   app.get("/api/courses/:slug", async (req, res) => {
     const courses = await storage.getAllCourses();
     const course = courses.find(c => {
-      const slug = c.title.toLowerCase().replace(/ /g, '-');
-      return slug === req.params.slug;
+      const slug = c.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      const requestedSlug = req.params.slug.toLowerCase();
+      return slug === requestedSlug;
     });
     
     if (!course) {

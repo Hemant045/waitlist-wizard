@@ -49,7 +49,7 @@ export default function CourseList() {
                 className="w-full" 
                 asChild
               >
-                <Link href={`/courses/${course.id}`}>
+                <Link href={`/courses/${course.title.toLowerCase().replace(/ /g, '-')}`}>
                   Learn More
                 </Link>
               </Button>
