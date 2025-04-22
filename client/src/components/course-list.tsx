@@ -211,7 +211,7 @@ export default function CourseList() {
                     className="h-10" 
                     asChild
                   >
-                    <Link href={`/courses/${course.title.toLowerCase().replace(/ /g, '-')}`}>
+                    <Link href={`/courses/${course.id}`}>
                       View Course
                     </Link>
                   </Button>

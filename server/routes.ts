@@ -35,13 +35,8 @@ export async function registerRoutes(app: Express) {
     res.json(courses);
   });
 
-  app.get("/api/courses/:slug", async (req, res) => {
-    const courses = await storage.getAllCourses();
-    const course = courses.find(c => {
-      const titleSlug = c.title.toLowerCase().replace(/ /g, '-');
-      return titleSlug === req.params.slug;
-    });
-    
+  app.get("/api/courses/:id", async (req, res) => {
+    const course = await storage.getCourse(parseInt(req.params.id));
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
     }
