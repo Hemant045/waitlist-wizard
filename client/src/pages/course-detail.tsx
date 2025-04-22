@@ -297,7 +297,6 @@ export default function CourseDetail() {
             </div>
           </div>
         </div>
-      </div>
       <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-4">What You'll Learn</h2>
@@ -535,18 +534,6 @@ export default function CourseDetail() {
         open={showCheckout}
         onOpenChange={setShowCheckout}
       />
-    </div>
-  );
-
-  return (
-    <div className="min-h-screen bg-background">
-      <div className="bg-gradient-to-r from-primary/10 to-primary/5 border-b">
-        {/* Hero Section Content */}
-      </div>
-      <section className="py-20 bg-muted/30">
-        {/* Section Content */}
-      </section>
-      {/* Other sections */}
     </div>
   );
 }
