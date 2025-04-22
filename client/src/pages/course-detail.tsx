@@ -168,7 +168,7 @@ export default function CourseDetail() {
                 </div>
                 <h1 className="text-4xl lg:text-5xl font-bold">{course.title}</h1>
                 <p className="text-xl text-muted-foreground">{course.description}</p>
-                
+
                 <div className="flex flex-wrap gap-6">
                   <div className="flex items-center gap-2">
                     <Timer className="h-5 w-5 text-primary" />
@@ -195,7 +195,7 @@ export default function CourseDetail() {
                 </div>
               </div>
             </div>
-            
+
             <div className="relative">
               <Card className="overflow-hidden">
                 <img
@@ -212,7 +212,7 @@ export default function CourseDetail() {
                     </div>
                     <span className="text-sm text-muted-foreground">500+ students enrolled</span>
                   </div>
-                  
+
                   {details && details.highlights.map((highlight, index) => (
                     <div key={index} className="flex items-center gap-3">
                       <div className="bg-primary/10 p-2 rounded-lg">
@@ -304,7 +304,7 @@ export default function CourseDetail() {
           <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
             Master these in-demand skills and boost your career opportunities
           </p>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {details && details.features.map((feature, index) => (
               <Card key={index} className="border-2 hover:border-primary/50 transition-all">
